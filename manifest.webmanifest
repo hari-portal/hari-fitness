@@ -1,0 +1,14 @@
+{
+  "name": "FitQuest",
+  "short_name": "FitQuest",
+  "description": "A simple, energetic fitness habit tracker.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f0b21",
+  "theme_color": "#0f0b21",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f0b21">
+<meta name="description" content="FitQuest: a simple, energetic fitness habit tracker.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>FitQuest</title>
+<style>
+:root{--bg:#0f0b21;--card:#1b1535;--card2:#251d47;--text:#f4f1ff;--mute:#9b94c4;--pink:#ff4d6d;--yellow:#ffd166;--green:#06d6a0;--violet:#7b61ff;--r:20px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:radial-gradient(1200px 600px at 10% -10%,#2b1b63 0,transparent 60%),radial-gradient(800px 500px at 110% 10%,#5a1740 0,transparent 55%),var(--bg);color:var(--text);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;padding:max(14px,env(safe-area-inset-top)) 14px 90px}
+#app{max-width:560px;margin:0 auto}
+h1{margin:0;font-size:26px;letter-spacing:-.5px;background:linear-gradient(90deg,var(--yellow),var(--pink),var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:900}
+h2{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mute);margin:22px 4px 10px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.datenav{display:flex;align-items:center;gap:6px;background:var(--card);border-radius:99px;padding:4px}
+.datenav button{width:34px;height:34px;border-radius:50%;border:0;background:var(--card2);color:var(--text);font-size:18px;cursor:pointer}
+.datenav span{min-width:92px;text-align:center;font-weight:700;font-size:14px}
+.wisdom{margin-top:14px;padding:14px 16px;border-radius:var(--r);background:linear-gradient(135deg,#3a1d7a,#7a1f5c);box-shadow:0 8px 30px #7b61ff33}
+.wisdom b{display:block;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);margin-bottom:4px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{background:var(--card);border-radius:16px;padding:12px 6px;text-align:center}
+.stat .n{font-size:24px;font-weight:900;line-height:1.1}
+.stat .l{font-size:10.5px;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;margin-top:2px}
+.stat:nth-child(1) .n{color:var(--yellow)}.stat:nth-child(2) .n{color:var(--green)}.stat:nth-child(3) .n{color:var(--pink)}.stat:nth-child(4) .n{color:var(--violet)}
+.panel{background:var(--card);border-radius:var(--r);padding:14px;margin-top:8px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:90px}
+.bar{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.bar i{display:block;width:100%;border-radius:8px 8px 4px 4px;background:linear-gradient(180deg,var(--pink),var(--violet));min-height:4px;transition:height .4s}
+.bar.off i{background:var(--card2)}
+.bar small{font-size:10px;color:var(--mute)}
+.bar.sel small{color:var(--yellow);font-weight:800}
+.heat{display:grid;grid-template-columns:repeat(14,1fr);gap:4px;margin-top:12px}
+.heat div{aspect-ratio:1;border-radius:5px;background:#2a2347}
+.heat .l1{background:#5b3fbf}.heat .l2{background:#a14dd0}.heat .l3{background:#ff7a59}.heat .l4{background:var(--yellow)}
+.heatcap{font-size:11px;color:var(--mute);margin-top:6px}
+.ex{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:10px;position:relative;overflow:hidden;transition:transform .15s}
+.ex.done{background:linear-gradient(135deg,#0c4f45,#1b1535)}
+.ex .row{display:flex;align-items:center;gap:10px}
+.ex .emo{font-size:30px}
+.ex .nm{font-weight:800;flex:1}
+.ex .nm small{display:block;font-weight:500;color:var(--mute);font-size:12px}
+.ex .tick{font-size:22px;opacity:.25}.ex.done .tick{opacity:1}
+.prog{height:8px;border-radius:9px;background:var(--card2);margin:12px 0}
+.prog i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--yellow),var(--pink));transition:width .3s}
+.ex.done .prog i{background:var(--green)}
+.ctl{display:flex;gap:8px;align-items:center}
+.ctl button{height:44px;min-width:44px;border:0;border-radius:14px;background:var(--card2);color:var(--text);font-size:22px;font-weight:700;cursor:pointer}
+.ctl button:active{transform:scale(.92)}
+.ctl input{flex:1;min-width:0;height:44px;border-radius:14px;border:2px solid var(--card2);background:transparent;color:var(--text);text-align:center;font-size:20px;font-weight:800}
+.ctl .go{background:linear-gradient(135deg,var(--green),#12b886);color:#04261f;padding:0 14px;font-size:15px}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.w{background:var(--card2);border-radius:14px;padding:10px}
+.w label{display:block;font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.w input,textarea,select{width:100%;background:transparent;border:2px solid #3a3162;border-radius:12px;color:var(--text);padding:9px;font:inherit}
+.w .mini{display:flex;gap:6px;align-items:center}
+.w .mini button{width:38px;height:38px;border-radius:12px;border:0;background:var(--card);color:var(--text);font-size:18px;cursor:pointer}
+.w .mini b{flex:1;text-align:center;font-size:20px}
+.moods{display:flex;gap:4px;justify-content:space-between}
+.moods button{flex:1;border:0;border-radius:10px;background:var(--card);font-size:20px;padding:6px 0;cursor:pointer;filter:grayscale(1);opacity:.55}
+.moods button.on{filter:none;opacity:1;background:var(--violet)}
+.full{grid-column:1/-1}
+textarea{resize:vertical;min-height:60px}
+.foot{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.btn{flex:1;border:0;border-radius:14px;padding:13px;background:var(--card2);color:var(--text);font-weight:700;cursor:pointer;font-size:14px}
+.btn.hot{background:linear-gradient(135deg,var(--pink),var(--violet))}
+.sheet{position:fixed;inset:0;background:#000a;display:none;align-items:flex-end;justify-content:center;z-index:10}
+.sheet.open{display:flex}
+.sheet .in{background:var(--bg);width:100%;max-width:560px;max-height:88vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
+.erow{background:var(--card);border-radius:16px;padding:10px;margin-bottom:8px;display:grid;grid-template-columns:54px 1fr 40px;gap:8px}
+.erow .sub{grid-column:1/-1;display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:8px}
+.erow .del{border:0;border-radius:12px;background:#4a1830;color:#ff8fa3;font-size:18px;cursor:pointer}
+.hint{font-size:12px;color:var(--mute);margin:0 4px 10px}
+.pop{position:fixed;pointer-events:none;font-size:26px;z-index:20;animation:pop 1s ease-out forwards}
+@keyframes pop{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="sheet" id="sheet"><div class="in" id="sheetIn"></div></div>
+<input type="file" id="file" accept="application/json" hidden>
+
+<script>
+const KEY='fitquest.v1';
+const UNITS={reps:{l:'reps',s:5},sec:{l:'sec',s:10},min:{l:'min',s:5},rounds:{l:'rounds',s:1},km:{l:'km',s:0.5}};
+const WISDOM=[
+["Kaizen · Japan","Get 1% better each day. Small steps done daily beat heroic bursts done rarely."],
+["Surya Namaskar · India","Greet the sun with a few rounds of sun salutations. Mobility, strength and calm in one flow."],
+["Tabata · Japan","Short and fierce works: 20 seconds all-out, 10 seconds rest. Intensity can replace duration."],
+["Friluftsliv · Norway","Move outdoors, whatever the weather. Fresh air is part of the workout."],
+["Sisu · Finland","Sisu is quiet grit. Do the next rep when it gets uncomfortable and your mind wants to quit."],
+["Ikigai · Okinawa","Attach movement to something you love and you will never have to force yourself."],
+["Tai Chi · China","Slow is strong. Control and balance build the body that lasts for decades."],
+["Manpo-kei · Japan","Walking is the original superfood. Keep stacking steps; they are the base of every plan."],
+["Dinacharya · Ayurveda","Rhythm beats willpower. Train at roughly the same time each day and it becomes automatic."],
+["Ubuntu · Southern Africa","I am because we are. Train with a friend or share your streak with one."],
+["Capoeira · Brazil","Make it playful. If movement feels like a game, you will keep coming back."],
+["Mens sana · Rome","A sound mind in a sound body. Sleep, water and training belong to one system."],
+["Lao Tzu · China","A journey of a thousand miles begins with a single step. Log today and you have taken it."],
+["Rest is training · Everywhere","Muscle is built while you recover. Sleep is the cheapest performance enhancer you own."],
+["Never miss twice · Habit science","One missed day is an accident. Two is the start of a new habit. Come back tomorrow."]
+];
+const MOODS=['😴','😐','🙂','😄','🔥'];
+const DEFAULT={exercises:[
+ {id:'e1',emoji:'🌞',name:'Surya Namaskar',unit:'rounds',goal:6,step:1},
+ {id:'e2',emoji:'💪',name:'Push-ups',unit:'reps',goal:30,step:5},
+ {id:'e3',emoji:'🦵',name:'Squats',unit:'reps',goal:40,step:5},
+ {id:'e4',emoji:'🧱',name:'Plank',unit:'sec',goal:60,step:10},
+ {id:'e5',emoji:'🚶',name:'Brisk walk',unit:'min',goal:30,step:5}
+],logs:{}};
+let S=load(), sel=ymd(new Date());
+
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.exercises&&s.logs)return s}catch(e){}return JSON.parse(JSON.stringify(DEFAULT))}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function ymd(d){const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)}
+function pd(s){const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
+function addD(s,n){const d=pd(s);d.setDate(d.getDate()+n);return ymd(d)}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>ymd(new Date());
+function log(d){return S.logs[d]||(S.logs[d]={ex:{}})}
+function val(d,id){return (S.logs[d]&&S.logs[d].ex&&S.logs[d].ex[id])||0}
+function stats(d){const t=S.exercises.length;let done=0;S.exercises.forEach(e=>{if(e.goal>0&&val(d,e.id)>=e.goal)done++});return{done,total:t,pct:t?done/t:0}}
+const active=d=>stats(d).done>0;
+function streak(){let d=today();if(!active(d))d=addD(d,-1);let n=0;while(active(d)){n++;d=addD(d,-1)}return n}
+
+function label(d){const t=today();if(d===t)return'Today';if(d===addD(t,-1))return'Yesterday';return pd(d).toLocaleDateString(undefined,{day:'numeric',month:'short'})}
+
+function render(){
+  const t=today();
+  const dayIdx=Math.floor(pd(sel).getTime()/864e5)%WISDOM.length;
+  const w=WISDOM[dayIdx];
+  // summary
+  let week=0;for(let i=0;i<7;i++)week+=stats(addD(t,-i)).pct;
+  let month=0;const m=t.slice(0,7);for(let i=0;i<31;i++){const d=addD(t,-i);if(d.startsWith(m)&&active(d))month++}
+  let total=0;Object.keys(S.logs).forEach(d=>{total+=stats(d).done});
+  let bars='';for(let i=6;i>=0;i--){const d=addD(t,-i),p=stats(d).pct;bars+=`<div class="bar ${p?'':'off'} ${d===sel?'sel':''}" data-act="goto" data-d="${d}"><i style="height:${Math.max(4,p*100)}%"></i><small>${pd(d).toLocaleDateString(undefined,{weekday:'short'}).slice(0,2)}</small></div>`}
+  let heat='';for(let i=27;i>=0;i--){const d=addD(t,-i),p=stats(d).pct;const c=p===0?'':p<.4?'l1':p<.75?'l2':p<1?'l3':'l4';heat+=`<div class="${c}" data-act="goto" data-d="${d}" title="${d}"></div>`}
+  const L=log(sel); if(!Object.keys(S.logs[sel].ex).length&&!S.logs[sel].water&&!S.logs[sel].note&&!S.logs[sel].sleep&&!S.logs[sel].weight&&!S.logs[sel].energy)delete S.logs[sel];
+  const st=stats(sel);
+  const exs=S.exercises.map(e=>{const v=val(sel,e.id),p=e.goal>0?Math.min(100,v/e.goal*100):0,dn=e.goal>0&&v>=e.goal;
+    return`<div class="ex ${dn?'done':''}" data-id="${e.id}"><div class="row"><span class="emo">${esc(e.emoji)}</span><div class="nm">${esc(e.name)}<small>Goal ${e.goal} ${UNITS[e.unit].l}</small></div><span class="tick">✅</span></div><div class="prog"><i style="width:${p}%"></i></div><div class="ctl"><button data-act="dec">−</button><input type="number" inputmode="decimal" min="0" value="${v}" data-act="set"><button data-act="inc">+</button><button class="go" data-act="goal">Goal ✓</button></div></div>`}).join('');
+  const lg=S.logs[sel]||{};
+  const moods=MOODS.map((m,i)=>`<button class="${lg.energy===i+1?'on':''}" data-act="energy" data-v="${i+1}">${m}</button>`).join('');
+  $('#app').innerHTML=`
+  <div class="top"><h1>FitQuest ⚡</h1><div class="datenav"><button data-act="prev">‹</button><span>${label(sel)}</span><button data-act="next" ${sel>=t?'disabled style="opacity:.3"':''}>›</button></div></div>
+  <div class="wisdom"><b>${esc(w[0])}</b>${esc(w[1])}</div>
+  <h2>Your progress</h2>
+  <div class="stats">
+   <div class="stat"><div class="n">🔥${streak()}</div><div class="l">Day streak</div></div>
+   <div class="stat"><div class="n">${Math.round(week/7*100)}%</div><div class="l">This week</div></div>
+   <div class="stat"><div class="n">${month}</div><div class="l">Active days / mo</div></div>
+   <div class="stat"><div class="n">${total}</div><div class="l">Goals smashed</div></div>
+  </div>
+  <div class="panel"><div class="bars">${bars}</div><div class="heat">${heat}</div><div class="heatcap">Last 4 weeks · tap any day to open it</div></div>
+  <h2>${label(sel)} · ${st.done}/${st.total} done</h2>
+  ${exs||'<div class="panel">No exercises yet. Tap “Edit exercises” below.</div>'}
+  <h2>Body &amp; recovery</h2>
+  <div class="wgrid">
+   <div class="w"><label>💧 Water (glasses)</label><div class="mini"><button data-act="wdec">−</button><b>${lg.water||0}</b><button data-act="winc">+</button></div></div>
+   <div class="w"><label>😴 Sleep (hours)</label><input type="number" inputmode="decimal" step="0.5" min="0" max="24" value="${lg.sleep??''}" data-act="sleep" placeholder="7.5"></div>
+   <div class="w"><label>⚖️ Weight (kg)</label><input type="number" inputmode="decimal" step="0.1" value="${lg.weight??''}" data-act="weight" placeholder="optional"></div>
+   <div class="w"><label>⚡ Energy</label><div class="moods">${moods}</div></div>
+   <div class="w full"><label>📝 Note</label><textarea data-act="note" placeholder="How did it feel? Any wins or aches?">${esc(lg.note||'')}</textarea></div>
+  </div>
+  <div class="foot"><button class="btn hot" data-act="edit">✏️ Edit exercises</button><button class="btn" data-act="export">⬇ Backup</button><button class="btn" data-act="import">⬆ Restore</button></div>`;
+}
+const $=s=>document.querySelector(s);
+
+function burst(el){const r=el.getBoundingClientRect(),em=['🎉','⚡','🔥','💪','✨'];for(let i=0;i<10;i++){const s=document.createElement('span');s.className='pop';s.textContent=em[i%5];s.style.left=(r.left+r.width/2)+'px';s.style.top=(r.top+r.height/2)+'px';s.style.setProperty('--x',(Math.random()*240-120)+'px');s.style.setProperty('--y',(Math.random()*-200-20)+'px');s.style.setProperty('--r',(Math.random()*360-180)+'deg');document.body.appendChild(s);setTimeout(()=>s.remove(),1000)}}
+function setVal(id,v,card){const e=S.exercises.find(x=>x.id===id);v=Math.max(0,Math.round(v*100)/100);const was=val(sel,id)>=e.goal;const l=log(sel);l.ex[id]=v;save();const now=e.goal>0&&v>=e.goal;render();if(now&&!was){const c=document.querySelector(`.ex[data-id="${id}"]`);if(c)burst(c)}}
+
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+  const card=b.closest('.ex'),id=card&&card.dataset.id,e=id&&S.exercises.find(x=>x.id===id);
+  if(a==='inc')setVal(id,val(sel,id)+e.step);
+  else if(a==='dec')setVal(id,val(sel,id)-e.step);
+  else if(a==='goal')setVal(id,e.goal);
+  else if(a==='prev'){sel=addD(sel,-1);render()}
+  else if(a==='next'){if(sel<today()){sel=addD(sel,1);render()}}
+  else if(a==='goto'){sel=b.dataset.d;render();window.scrollTo({top:0,behavior:'smooth'})}
+  else if(a==='winc'){const l=log(sel);l.water=(l.water||0)+1;save();render()}
+  else if(a==='wdec'){const l=log(sel);l.water=Math.max(0,(l.water||0)-1);save();render()}
+  else if(a==='energy'){const l=log(sel);l.energy=l.energy===+b.dataset.v?0:+b.dataset.v;save();render()}
+  else if(a==='edit')openEdit();
+  else if(a==='export')doExport();
+  else if(a==='import')$('#file').click();
+});
+document.addEventListener('change',ev=>{
+  const t=ev.target,a=t.dataset.act;if(!a)return;
+  if(a==='set'){setVal(t.closest('.ex').dataset.id,parseFloat(t.value)||0)}
+  else if(a==='sleep'||a==='weight'){const l=log(sel);l[a]=t.value===''?undefined:parseFloat(t.value);save();render()}
+  else if(a==='note'){log(sel).note=t.value;save();render()}
+});
+
+// edit sheet
+function openEdit(){$('#sheet').classList.add('open');drawEdit()}
+function drawEdit(){
+  $('#sheetIn').innerHTML=`<h1 style="font-size:22px">Edit exercises</h1><p class="hint">Change anything, anytime. Past logs stay saved, even if you rename or remove an exercise.</p>`+
+  S.exercises.map(e=>`<div class="erow" data-id="${e.id}"><input data-f="emoji" value="${esc(e.emoji)}" maxlength="4" style="text-align:center;font-size:22px"><input data-f="name" value="${esc(e.name)}" placeholder="Exercise name"><button class="del" data-del="${e.id}">🗑</button>
+  <div class="sub"><input data-f="goal" type="number" inputmode="decimal" value="${e.goal}" placeholder="Goal"><select data-f="unit">${Object.keys(UNITS).map(u=>`<option value="${u}" ${u===e.unit?'selected':''}>${UNITS[u].l}</option>`).join('')}</select><input data-f="step" type="number" inputmode="decimal" value="${e.step}" placeholder="Step"></div></div>`).join('')+
+  `<div class="foot"><button class="btn" id="addEx">＋ Add exercise</button><button class="btn hot" id="closeEx">Done</button></div><p class="hint" style="margin-top:12px">Row: emoji · name · goal · unit · step size for the +/− buttons.</p>`;
+}
+$('#sheet').addEventListener('change',ev=>{
+  const t=ev.target,f=t.dataset.f;if(!f)return;const e=S.exercises.find(x=>x.id===t.closest('.erow').dataset.id);
+  if(f==='goal'||f==='step'){e[f]=Math.max(f==='step'?0.1:0,parseFloat(t.value)||0)}
+  else if(f==='unit'){e.unit=t.value;e.step=UNITS[t.value].s}
+  else e[f]=t.value.trim()||(f==='name'?'Exercise':'🏃');
+  save();if(f==='unit')drawEdit();render();
+});
+$('#sheet').addEventListener('click',ev=>{
+  const t=ev.target;
+  if(t.dataset.del){if(confirm('Remove this exercise from your list? Old logs are kept.')){S.exercises=S.exercises.filter(x=>x.id!==t.dataset.del);save();drawEdit();render()}}
+  else if(t.id==='addEx'){S.exercises.push({id:'e'+Date.now().toString(36),emoji:'🏃',name:'New exercise',unit:'reps',goal:10,step:5});save();drawEdit();render()}
+  else if(t.id==='closeEx'||t.id==='sheet'){$('#sheet').classList.remove('open');render()}
+});
+
+// backup
+function doExport(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download='fitquest-backup-'+today()+'.json';a.click()}
+$('#file').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const s=JSON.parse(r.result);if(!s.exercises||!s.logs)throw 0;if(confirm('Replace current data with this backup?')){S=s;save();render()}}catch(x){alert('That file is not a valid FitQuest backup.')}};r.readAsText(f);e.target.value=''});
+
+render();
+if('serviceWorker' in navigator&&location.protocol!=='file:'){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
